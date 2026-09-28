@@ -1,5 +1,5 @@
 /* Diário de Arquibancada — guarda o app no aparelho para abrir sem internet */
-const CACHE = 'arquibancada-v7';
+const CACHE = 'arquibancada-v8';
 
 /* O app inteiro está no index.html. Os outros arquivos são extras:
    se algum faltar, o cache continua valendo em vez de falhar inteiro. */
@@ -45,4 +45,37 @@ self.addEventListener('fetch', (e) => {
         })
       )
   );
+});
+
+/* ------------------------------ notificações da Geral ------------------------------ */
+/* chega do servidor já cifrada (Web Push); aqui só vira a notificação na tela */
+self.addEventListener('push', (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { title: 'Diário de Arquibancada', body: e.data ? e.data.text() : '' }; }
+  const titulo = String(d.title || 'Diário de Arquibancada').slice(0, 80);
+  e.waitUntil(self.registration.showNotification(titulo, {
+    body: String(d.body || '').slice(0, 200),
+    icon: './icon-192.png',
+    badge: './icon-192.png',
+    tag: String(d.tag || 'geral').slice(0, 80),
+    renotify: true,
+    data: { url: typeof d.url === 'string' && d.url.startsWith('./') ? d.url : './' },
+  }));
+});
+
+/* tocar na notificação abre o app (ou traz para frente) no lugar certo */
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const destino = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  e.waitUntil((async () => {
+    const abertas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of abertas) {
+      if (c.url.startsWith(self.registration.scope)) {
+        await c.focus();
+        c.postMessage({ tipo: 'abrir', url: destino });
+        return;
+      }
+    }
+    await self.clients.openWindow(destino);
+  })());
 });
