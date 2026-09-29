@@ -1,10 +1,10 @@
 /* Diário de Arquibancada — guarda o app no aparelho para abrir sem internet */
-const CACHE = 'arquibancada-v8';
+const CACHE = 'arquibancada-v9';
 
 /* O app inteiro está no index.html. Os outros arquivos são extras:
    se algum faltar, o cache continua valendo em vez de falhar inteiro. */
 const ESSENCIAL = ['./', './index.html'];
-const EXTRAS = ['./manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const EXTRAS = ['./manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './badge-96.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -55,8 +55,8 @@ self.addEventListener('push', (e) => {
   const titulo = String(d.title || 'Diário de Arquibancada').slice(0, 80);
   e.waitUntil(self.registration.showNotification(titulo, {
     body: String(d.body || '').slice(0, 200),
-    icon: './icon-192.png',
-    badge: './icon-192.png',
+    /* ícone da barra de status: silhueta branca do escudo sobre transparente (o Android pinta só o contorno) */
+    badge: './badge-96.png',
     tag: String(d.tag || 'geral').slice(0, 80),
     renotify: true,
     data: { url: typeof d.url === 'string' && d.url.startsWith('./') ? d.url : './' },
