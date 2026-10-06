@@ -1,5 +1,5 @@
 /* Diário de Arquibancada — guarda o app no aparelho para abrir sem internet */
-const CACHE = 'arquibancada-v20';
+const CACHE = 'arquibancada-v21';
 
 /* O app inteiro está no index.html. Os outros arquivos são extras:
    se algum faltar, o cache continua valendo em vez de falhar inteiro. */
