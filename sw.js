@@ -1,6 +1,6 @@
 /* Diário de Arquibancada — guarda o app no aparelho para abrir sem internet */
 /* a versão é preenchida pelo empacotar.mjs com um código do conteúdo do app: toda mudança vira um cache novo */
-const CACHE = 'arquibancada-462109a410';
+const CACHE = 'arquibancada-ee863536c6';
 
 /* O app inteiro está no index.html. Os outros arquivos são extras:
    se algum faltar, o cache continua valendo em vez de falhar inteiro. */
