@@ -1,6 +1,8 @@
 /* Diário de Arquibancada — guarda o app no aparelho para abrir sem internet */
 /* a versão é preenchida pelo empacotar.mjs com um código do conteúdo do app: toda mudança vira um cache novo */
-const CACHE = 'arquibancada-cfeb398149';
+const CACHE = 'arquibancada-04d37f339d';
+/* oficial e teste moram no mesmo domínio e dividem os caches: cada um só limpa os seus */
+const MEU = (k) => ('arquibancada' === 'arquibancada-teste') === k.startsWith('arquibancada-teste-');
 
 /* O app inteiro está no index.html. Os outros arquivos são extras:
    se algum faltar, o cache continua valendo em vez de falhar inteiro. */
@@ -20,7 +22,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && MEU(k)).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
